@@ -103,8 +103,16 @@ function create (){
     spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     //this.input.keyboard.addKey('M')
 
+    var keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z); // Funcão que altera o pipe 
+    keyZ.on('down', function () {
+        gap = 600; 
+    });
+
     this.input.keyboard.on('keydown-' + 'SPACE', flapNow);
     this.input.on('pointerdown', flapNowBird2); 
+
+    this.input.keyboard.on('keydown-A', addScore);
+    this.input.keyboard.on('keydown-L', addscore2);
 }
 
 function getRandom() {
@@ -215,6 +223,16 @@ function playerDeadPlayer2() {
     game.sound.play("die");
     player2.setCollideWorldBounds(false);
     verify();
+}
+
+function addScore() {
+    score += 1000;
+    scoreText.setText(score);
+}
+
+function addscore2() {
+    score2 += 3000;
+    scoreText2.setText(score2);
 }
 
 function verify(){
