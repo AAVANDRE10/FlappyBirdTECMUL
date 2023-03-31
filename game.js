@@ -26,22 +26,30 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-var isPaused = false, gameOver = false, start = false;
+var isPaused = false, gameOver = false, start = false, chooseLevel = false, chooseColor = false, chooseColor2 = false;
 var score = 0;
 var score2 = 0;
 var birdX = (gameWidth/2)-50;
 var birdY = (gameHeight/2)-50;
 
 function preload (){
-    this.load.image('pipebottom', 'assets/pipebottom.png');
-    this.load.image('pipetop', 'assets/pipetop.png');
-    this.load.image('bird', 'assets/bird.png');
-    this.load.image('bird2', 'assets/bird2.png');
-    this.load.image('background', 'assets/back.png');
-    this.load.image('start', 'assets/start.png');
-    this.load.image('easyMode', 'assets/easyMode.png');
-    this.load.image('mediumMode', 'assets/mediumMode.png');
-    this.load.image('hardMode', 'assets/hardMode.png');
+    this.load.image('pipebottom', 'assets/pipes/pipebottom.png');
+    this.load.image('pipetop', 'assets/pipes/pipetop.png');
+    this.load.image('bird', 'assets/birds/bird.png');
+    this.load.image('bird2', 'assets/birds/bird2.png');
+    this.load.image('bird3', 'assets/birds/bird3.png');
+    this.load.image('bird4', 'assets/birds/bird4.png');
+    this.load.image('background', 'assets/menu/back.png');
+    this.load.image('start', 'assets/menu/start.png');
+    this.load.image('easyMode', 'assets/menu/easyMode.png');
+    this.load.image('mediumMode', 'assets/menu/mediumMode.png');
+    this.load.image('hardMode', 'assets/menu/hardMode.png');
+    this.load.image('Player_1', 'assets/menu/Player_1.png');
+    this.load.image('Player_2', 'assets/menu/Player_2.png');
+    this.load.image('Amarelo', 'assets/menu/Amarelo.png');
+    this.load.image('Verde', 'assets/menu/Verde.png');
+    this.load.image('Vermelho', 'assets/menu/Vermelho.png');
+    this.load.image('Azul', 'assets/menu/Azul.png');
 
     this.load.audio('flap', './assets/sounds/wing.ogg');
     this.load.audio('hit', './assets/sounds/hit.ogg');
@@ -50,7 +58,7 @@ function preload (){
     this.load.audio('score2', './assets/sounds/point.ogg');
 }
 
-var platforms,spacebar,player,player2,scoreText, scoreText2;
+var platforms,spacebar,player,player2,scoreText, scoreText2, playerColor, playerColor2;
 var gap = 0; 
 var xGap = 250;
 
@@ -60,17 +68,133 @@ function create (){
     const easyModeLabel = this.add.image(800, 400, 'easyMode');
     const mediumModeLabel = this.add.image(800, 500, 'mediumMode');
     const hardModeLabel = this.add.image(800, 600, 'hardMode');
+    const Player_1 = this.add.image(800, 350, 'Player_1').setVisible(false);
+    const Player_2 = this.add.image(800, 350, 'Player_2').setVisible(false);
+    const Amarelo = this.add.image(800, 500, 'Amarelo').setVisible(false);
+    const Verde = this.add.image(800, 550, 'Verde').setVisible(false);
+    const Vermelho = this.add.image(800, 600, 'Vermelho').setVisible(false);
+    const Azul = this.add.image(800, 450, 'Azul').setVisible(false);
+
     
     startLabel.setInteractive();
     easyModeLabel.setInteractive();
     mediumModeLabel.setInteractive();
     hardModeLabel.setInteractive();
 
+
     easyModeLabel.on('pointerdown', function(){
         easyModeLabel.destroy();
         mediumModeLabel.destroy();
         hardModeLabel.destroy();
         gap = 300;
+        chooseLevel = true;
+
+        Player_1.setInteractive().setVisible(true);
+        Player_2.setInteractive().setVisible(false);
+        Amarelo.setInteractive().setVisible(true);
+        Verde.setInteractive().setVisible(true);
+        Vermelho.setInteractive().setVisible(true);
+        Azul.setInteractive().setVisible(true);
+
+        Azul.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Azul.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird';
+                player.setTexture(playerColor);
+                Azul.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Verde.destroy();
+                Vermelho.destroy();
+                Amarelo.destroy();
+                Player_2.destroy();
+            }
+        })
+
+        Amarelo.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird4';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Amarelo.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird4';
+                player.setTexture(playerColor);
+                Amarelo.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Verde.destroy();
+                Vermelho.destroy();
+                Azul.destroy();
+                Player_2.destroy();
+            }
+        })
+
+        Verde.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird2';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Verde.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird2';
+                player.setTexture(playerColor);
+                Verde.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Amarelo.destroy();
+                Vermelho.destroy();
+                Azul.destroy();
+                Player_2.destroy();
+            }
+        })
+
+        Vermelho.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird3';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Vermelho.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird3';
+                player.setTexture(playerColor);
+                Vermelho.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Amarelo.destroy();
+                Verde.destroy();
+                Azul.destroy();
+                Player_2.destroy();
+            }
+        })
     })
 
     mediumModeLabel.on('pointerdown', function(){
@@ -78,6 +202,113 @@ function create (){
         mediumModeLabel.destroy();
         hardModeLabel.destroy();
         gap = 160;
+        chooseLevel = true;
+
+        Player_1.setVisible(true);
+        Amarelo.setInteractive().setVisible(true);
+        Verde.setInteractive().setVisible(true);
+        Vermelho.setInteractive().setVisible(true);
+        Azul.setInteractive().setVisible(true);
+
+        Azul.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Azul.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird';
+                player.setTexture(playerColor);
+                Azul.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Verde.destroy();
+                Vermelho.destroy();
+                Amarelo.destroy();
+                Player_2.destroy();
+            }
+        })
+
+        Amarelo.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird4';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Amarelo.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird4';
+                player.setTexture(playerColor);
+                Amarelo.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Verde.destroy();
+                Vermelho.destroy();
+                Azul.destroy();
+                Player_2.destroy();
+            }
+        })
+
+        Verde.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird2';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Verde.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird2';
+                player.setTexture(playerColor);
+                Verde.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Amarelo.destroy();
+                Vermelho.destroy();
+                Azul.destroy();
+                Player_2.destroy();
+            }
+        })
+
+        Vermelho.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird3';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Vermelho.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird3';
+                player.setTexture(playerColor);
+                Vermelho.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Amarelo.destroy();
+                Verde.destroy();
+                Azul.destroy();
+                Player_2.destroy();
+            }
+        })
     })
 
     hardModeLabel.on('pointerdown', function(){
@@ -85,12 +316,121 @@ function create (){
         mediumModeLabel.destroy();
         hardModeLabel.destroy();
         gap = 130;
+        chooseLevel = true;
+
+        Player_1.setVisible(true);
+        Amarelo.setInteractive().setVisible(true);
+        Verde.setInteractive().setVisible(true);
+        Vermelho.setInteractive().setVisible(true);
+        Azul.setInteractive().setVisible(true);
+
+        Azul.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Azul.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird';
+                player.setTexture(playerColor);
+                Azul.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Verde.destroy();
+                Vermelho.destroy();
+                Amarelo.destroy();
+                Player_2.destroy();
+            }
+        })
+
+        Amarelo.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird4';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Amarelo.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird4';
+                player.setTexture(playerColor);
+                Amarelo.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Verde.destroy();
+                Vermelho.destroy();
+                Azul.destroy();
+                Player_2.destroy();
+            }
+        })
+
+        Verde.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird2';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Verde.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird2';
+                player.setTexture(playerColor);
+                Verde.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Amarelo.destroy();
+                Vermelho.destroy();
+                Azul.destroy();
+                Player_2.destroy();
+            }
+        })
+
+        Vermelho.on('pointerdown', function(){
+            if(chooseColor){
+                playerColor2 = 'bird3';
+                player2.setTexture(playerColor2);
+                chooseColor2 = true;
+                Vermelho.destroy();
+            }
+
+            if(!chooseColor){
+                playerColor = 'bird3';
+                player.setTexture(playerColor);
+                Vermelho.destroy();
+                Player_1.destroy();
+                Player_2.setVisible(true);
+                chooseColor = true;
+            }
+
+            if(chooseColor && chooseColor2){
+                Amarelo.destroy();
+                Verde.destroy();
+                Azul.destroy();
+                Player_2.destroy();
+            }
+        })
     })
 
     startLabel.on('pointerdown', function(){
-        startButton.destroy();
-        startLabel.destroy();
-        start = true;
+        if(chooseLevel && chooseColor && chooseColor2){
+            startButton.destroy();
+            startLabel.destroy();
+            start = true;
+        }
     }) 
 
     var colors = ["0x1fbde0","0x0a4957","0x08272e"];
@@ -102,13 +442,13 @@ function create (){
 
     platforms = this.physics.add.staticGroup();
     var pipePos = gameWidth+2*xGap;
-    let pos = [100, 400]; // Replace this with the getRandom function
+    let pos = [100, 400];
 
-    platforms.create(pipePos, pos[0], 'pipebottom').setScale(1).refreshBody();
-    platforms.create(pipePos, pos[1], 'pipetop').setScale(1).refreshBody(); 
+    platforms.create(pipePos, pos[0], 'pipetop').setScale(1).refreshBody();
+    platforms.create(pipePos, pos[1], 'pipebottom').setScale(0).refreshBody(); 
 
-    player = this.physics.add.sprite(birdX, birdY, 'bird');
-    player2 = this.physics.add.sprite(birdX, birdY, 'bird2');
+    player = this.physics.add.sprite(birdX, birdY);
+    player2 = this.physics.add.sprite(birdX, birdY);
     
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
@@ -137,9 +477,8 @@ function create (){
     this.physics.add.collider(player2, platforms, playerHit2, null, game)
 
     spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    //this.input.keyboard.addKey('M')
 
-    var keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z); // Funcão que altera o pipe 
+    var keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z); 
     keyZ.on('down', function () {
         gap = 600; 
     });
@@ -234,7 +573,7 @@ function playerHit() {
     scoreText.setText(score)
     verify();
     setTimeout(playerDead, 200);
-    player1Active = false; // desativa o player 1
+    player1Active = false; 
 }
 
 function playerHit2() {
@@ -245,7 +584,7 @@ function playerHit2() {
     scoreText2.setText(score2)
     verify();
     setTimeout(playerDeadPlayer2, 200);
-    player2Active = false; // desativa o player 2
+    player2Active = false; 
 }
 
 function playerDead() {
@@ -281,14 +620,11 @@ function verify(){
     if(!player1Active && !player2Active){
         player.body.setVelocityX(0)
         player2.body.setVelocityX(0)
-        console.log("game over 1 and 2") 
     }
     else if(!player1Active){
         player.body.setVelocityX(0)
-        console.log("game over 1") 
     }
     else if(!player2Active){
         player2.body.setVelocityX(0)
-        console.log("game over 2")  
     }
 }
