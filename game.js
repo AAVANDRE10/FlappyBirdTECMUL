@@ -26,19 +26,17 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-var isPaused = false, gameOver = false, start = false, chooseLevel = false, chooseColor = false, chooseColor2 = false;
-var score = 0;
-var score2 = 0;
-var birdX = (gameWidth/2)-50;
-var birdY = (gameHeight/2)-50;
+var isPaused = false, gameOver = false, start = false, chooseLevel = false, chooseColorPlayer1 = false, chooseColorPlayer2 = false;
+var scorePlayer1 = 0, scorePlayer2 = 0;
+var birdX = (gameWidth/2)-50, birdY = (gameHeight/2)-50;
 
 function preload (){
     this.load.image('pipebottom', 'assets/pipes/pipebottom.png');
     this.load.image('pipetop', 'assets/pipes/pipetop.png');
-    this.load.image('bird', 'assets/birds/bird.png');
-    this.load.image('bird2', 'assets/birds/bird2.png');
-    this.load.image('bird3', 'assets/birds/bird3.png');
-    this.load.image('bird4', 'assets/birds/bird4.png');
+    this.load.image('BlueBird', 'assets/birds/bird.png');
+    this.load.image('Greenbird', 'assets/birds/bird2.png');
+    this.load.image('Redbird', 'assets/birds/bird3.png');
+    this.load.image('YellowBird', 'assets/birds/bird4.png');
     this.load.image('background', 'assets/menu/back.png');
     this.load.image('start', 'assets/menu/start.png');
     this.load.image('easyMode', 'assets/menu/easyMode.png');
@@ -55,12 +53,11 @@ function preload (){
     this.load.audio('hit', './assets/sounds/hit.ogg');
     this.load.audio('die', './assets/sounds/die.ogg');
     this.load.audio('score', './assets/sounds/point.ogg');
-    this.load.audio('score2', './assets/sounds/point.ogg');
 }
 
-var platforms,spacebar,player,player2,scoreText, scoreText2, playerColor, playerColor2;
-var gap = 0; 
-var xGap = 250;
+var platforms,spacebar,player,player2,scoreTextPlayer1, scoreTextPlayer2, player1Color, player2Color;
+var gap = 0, xGap = 250;
+const gravityValue = 300;
 
 function create (){
     const startButton = this.add.image(800, 400, 'background');
@@ -74,13 +71,11 @@ function create (){
     const Verde = this.add.image(800, 550, 'Verde').setVisible(false);
     const Vermelho = this.add.image(800, 600, 'Vermelho').setVisible(false);
     const Azul = this.add.image(800, 450, 'Azul').setVisible(false);
-
     
     startLabel.setInteractive();
     easyModeLabel.setInteractive();
     mediumModeLabel.setInteractive();
     hardModeLabel.setInteractive();
-
 
     easyModeLabel.on('pointerdown', function(){
         easyModeLabel.destroy();
@@ -97,23 +92,23 @@ function create (){
         Azul.setInteractive().setVisible(true);
 
         Azul.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'BlueBird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Azul.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'BlueBird';
+                player.setTexture(player1Color);
                 Azul.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Verde.destroy();
                 Vermelho.destroy();
                 Amarelo.destroy();
@@ -122,23 +117,23 @@ function create (){
         })
 
         Amarelo.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird4';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'YellowBird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Amarelo.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird4';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'YellowBird';
+                player.setTexture(player1Color);
                 Amarelo.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Verde.destroy();
                 Vermelho.destroy();
                 Azul.destroy();
@@ -147,23 +142,23 @@ function create (){
         })
 
         Verde.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird2';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'Greenbird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Verde.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird2';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'Greenbird';
+                player.setTexture(player1Color);
                 Verde.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Amarelo.destroy();
                 Vermelho.destroy();
                 Azul.destroy();
@@ -172,23 +167,23 @@ function create (){
         })
 
         Vermelho.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird3';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'Redbird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Vermelho.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird3';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'Redbird';
+                player.setTexture(player1Color);
                 Vermelho.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Amarelo.destroy();
                 Verde.destroy();
                 Azul.destroy();
@@ -211,23 +206,23 @@ function create (){
         Azul.setInteractive().setVisible(true);
 
         Azul.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'BlueBird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Azul.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'BlueBird';
+                player.setTexture(player1Color);
                 Azul.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Verde.destroy();
                 Vermelho.destroy();
                 Amarelo.destroy();
@@ -236,23 +231,23 @@ function create (){
         })
 
         Amarelo.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird4';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'YellowBird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Amarelo.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird4';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'YellowBird';
+                player.setTexture(player1Color);
                 Amarelo.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Verde.destroy();
                 Vermelho.destroy();
                 Azul.destroy();
@@ -261,23 +256,23 @@ function create (){
         })
 
         Verde.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird2';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'Greenbird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Verde.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird2';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'Greenbird';
+                player.setTexture(player1Color);
                 Verde.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Amarelo.destroy();
                 Vermelho.destroy();
                 Azul.destroy();
@@ -286,23 +281,23 @@ function create (){
         })
 
         Vermelho.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird3';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'Redbird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Vermelho.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird3';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'Redbird';
+                player.setTexture(player1Color);
                 Vermelho.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Amarelo.destroy();
                 Verde.destroy();
                 Azul.destroy();
@@ -325,23 +320,23 @@ function create (){
         Azul.setInteractive().setVisible(true);
 
         Azul.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'BlueBird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Azul.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'BlueBird';
+                player.setTexture(player1Color);
                 Azul.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Verde.destroy();
                 Vermelho.destroy();
                 Amarelo.destroy();
@@ -350,23 +345,23 @@ function create (){
         })
 
         Amarelo.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird4';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'YellowBird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Amarelo.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird4';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'YellowBird';
+                player.setTexture(player1Color);
                 Amarelo.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Verde.destroy();
                 Vermelho.destroy();
                 Azul.destroy();
@@ -375,23 +370,23 @@ function create (){
         })
 
         Verde.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird2';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'Greenbird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Verde.destroy();
             }
 
-            if(!chooseColor){
-                playerColor = 'bird2';
-                player.setTexture(playerColor);
+            if(!chooseColorPlayer1){
+                player1Color = 'Greenbird';
+                player.setTexture(player1Color);
                 Verde.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Amarelo.destroy();
                 Vermelho.destroy();
                 Azul.destroy();
@@ -400,23 +395,23 @@ function create (){
         })
 
         Vermelho.on('pointerdown', function(){
-            if(chooseColor){
-                playerColor2 = 'bird3';
-                player2.setTexture(playerColor2);
-                chooseColor2 = true;
+            if(chooseColorPlayer1){
+                player2Color = 'Redbird';
+                player2.setTexture(player2Color);
+                chooseColorPlayer2 = true;
                 Vermelho.destroy();
             }
 
             if(!chooseColor){
-                playerColor = 'bird3';
-                player.setTexture(playerColor);
+                player1Color = 'Redbird';
+                player.setTexture(player1Color);
                 Vermelho.destroy();
                 Player_1.destroy();
                 Player_2.setVisible(true);
-                chooseColor = true;
+                chooseColorPlayer1 = true;
             }
 
-            if(chooseColor && chooseColor2){
+            if(chooseColorPlayer1 && chooseColorPlayer2){
                 Amarelo.destroy();
                 Verde.destroy();
                 Azul.destroy();
@@ -426,19 +421,19 @@ function create (){
     })
 
     startLabel.on('pointerdown', function(){
-        if(chooseLevel && chooseColor && chooseColor2){
+        if(chooseLevel && chooseColorPlayer1 && chooseColorPlayer2){
             startButton.destroy();
             startLabel.destroy();
             start = true;
         }
-    }) 
+    })
 
     var colors = ["0x1fbde0","0x0a4957","0x08272e"];
     var randColor = colors[Math.floor(Math.random() * colors.length)];
     this.cameras.main.setBackgroundColor(randColor);
 
-    scoreText = this.add.text(birdX, (gameHeight/4),score,{fontSize: 60, color: '#d9d9d9'});
-    scoreText2 = this.add.text(birdX, (gameHeight/2),score2,{fontSize: 60, color: '#d9d9d9'});
+    scoreTextPlayer1 = this.add.text(birdX, (gameHeight/4),scorePlayer1,{fontSize: 60, color: '#d9d9d9'});
+    scoreTextPlayer2 = this.add.text(birdX, (gameHeight/2),scorePlayer2,{fontSize: 60, color: '#d9d9d9'});
 
     platforms = this.physics.add.staticGroup();
     var pipePos = gameWidth+2*xGap;
@@ -449,12 +444,9 @@ function create (){
 
     player = this.physics.add.sprite(birdX, birdY);
     player2 = this.physics.add.sprite(birdX, birdY);
-    
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
 
-    player2.setBounce(0.2);
-    player2.setCollideWorldBounds(true);
+    configurePlayer(player);
+    configurePlayer(player2);
 
     this.anims.create({
         key: 'flap',
@@ -469,12 +461,12 @@ function create (){
         frameRate: 20,
         repeat: 0
     });
+    
+    player.body.gravity.y = gravityValue;
+    player2.body.gravity.y = gravityValue;
 
-    player.body.setGravityY(300)
-    player2.body.setGravityY(300)
-
-    this.physics.add.collider(player, platforms, playerHit, null, game)
-    this.physics.add.collider(player2, platforms, playerHit2, null, game)
+    this.physics.add.collider(player, platforms, player1Hit, null, game)
+    this.physics.add.collider(player2, platforms, player2Hit, null, game)
 
     spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
@@ -483,11 +475,11 @@ function create (){
         gap = 600; 
     });
 
-    this.input.keyboard.on('keydown-' + 'SPACE', flapNow);
-    this.input.on('pointerdown', flapNowBird2); 
+    this.input.keyboard.on('keydown-' + 'SPACE', flapbird1);
+    this.input.on('pointerdown', flapBird2); 
 
     this.input.keyboard.on('keydown-A', addScore);
-    this.input.keyboard.on('keydown-L', addscore2);
+    this.input.keyboard.on('keydown-L', addScorePlayer2);
 }
 
 function getRandom() {
@@ -519,7 +511,6 @@ function update ()  {
                     platforms.create(gameWidth+xGap, pos[1], 'pipetop').setScale(1).refreshBody();
                     countpipe=0;
                 }
-
             }
 
             if(child.x <= -50) {
@@ -528,10 +519,10 @@ function update ()  {
 
             if(child.x< birdX && !gameOver && child.texture.key=="pipebottom" && !child.scored && start){
                 child.scored = true
-                score+=1;
-                score2+=1;
-                scoreText.setText(score)
-                scoreText2.setText(score2)
+                scorePlayer1+=1;
+                scorePlayer2+=1;
+                scoreTextPlayer1.setText(scorePlayer1)
+                scoreTextPlayer2.setText(scorePlayer2)
                 game.sound.play("score");
             }
         }
@@ -540,6 +531,7 @@ function update ()  {
     if(player.y > Number(game.canvas.height)+200 && player2.y > Number(game.canvas.height)+200) {
         endGame();
     }
+    
     if(player.y < -200 && player2.y < -200) {
         endGame();
     }
@@ -548,14 +540,14 @@ function update ()  {
 var player1Active = true;
 var player2Active = true;
 
-function flapNowBird2(){
+function flapBird2(){
     if(gameOver || !player2Active) return;
     if(isPaused) resume();
     player2.setVelocityY(-330);
     game.sound.play("flap");
 }
 
-function flapNow(){
+function flapbird1(){
     if(gameOver || !player1Active) return;
     if(isPaused) resume();
     player.setVelocityY(-330);
@@ -565,52 +557,49 @@ function flapNow(){
 var hitflag = false;
 var hitflag2 = false;
 
-function playerHit() {
-    score = this.score;
+function player1Hit() {
+    scorePlayer1 = this.scorePlayer1;
     if(hitflag) return;
     game.sound.play("hit");
     hitflag=true;
-    scoreText.setText(score)
+    scoreTextPlayer1.setText(scorePlayer1)
     verify();
-    setTimeout(playerDead, 200);
+    setTimeout(player1Dead, 200);
     player1Active = false; 
 }
 
-function playerHit2() {
-    score2 = this.score2;
+function player2Hit() {
     if(hitflag2) return;
     game.sound.play("hit");
     hitflag2=true;
-    scoreText2.setText(score2)
+    scoreTextPlayer2.destroy();
     verify();
-    setTimeout(playerDeadPlayer2, 200);
+    setTimeout(player2Dead, 200);
     player2Active = false; 
 }
 
-function playerDead() {
-    score = this.score;
-    scoreText.setText(score)
+function player1Dead() {
+    scorePlayer1 = this.scorePlayer1;
+    scoreTextPlayer1.destroy();
     game.sound.play("die");
     player.setCollideWorldBounds(false);
     verify();
 }
 
-function playerDeadPlayer2() {
-    score2 = this.score2;
-    scoreText2.setText(score2)
+function player2Dead() {
+    scorePlayer2 = this.scorePlayer2;
+    scoreTextPlayer2.setText(scorePlayer2)
     game.sound.play("die");
     player2.setCollideWorldBounds(false);
     verify();
 }
 
 function addScore() {
-    score += 1000;
-    scoreText.setText(score);
+    scoreTextPlayer1.setText(scorePlayer1 += 1000);
 }
 
-function addscore2() {
-    score2 += 3000;
-    scoreText2.setText(score2);
+function addScorePlayer2() {
+    scoreTextPlayer2.setText(scorePlayer2 += 3000);
 }
 
 function verify(){
@@ -627,4 +616,9 @@ function verify(){
     else if(!player2Active){
         player2.body.setVelocityX(0)
     }
+}
+
+function configurePlayer(player) {
+    player.setBounce(0.2);
+    player.setCollideWorldBounds(true);
 }
