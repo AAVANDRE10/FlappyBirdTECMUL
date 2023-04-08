@@ -531,7 +531,6 @@ function update ()  {
     if(player.y > Number(game.canvas.height)+200 && player2.y > Number(game.canvas.height)+200) {
         endGame();
     }
-    
     if(player.y < -200 && player2.y < -200) {
         endGame();
     }
@@ -569,10 +568,11 @@ function player1Hit() {
 }
 
 function player2Hit() {
+    scorePlayer2 = this.scorePlayer2;
     if(hitflag2) return;
     game.sound.play("hit");
     hitflag2=true;
-    scoreTextPlayer2.destroy();
+    scoreTextPlayer2.setText(scorePlayer2)
     verify();
     setTimeout(player2Dead, 200);
     player2Active = false; 
@@ -580,7 +580,7 @@ function player2Hit() {
 
 function player1Dead() {
     scorePlayer1 = this.scorePlayer1;
-    scoreTextPlayer1.destroy();
+    scoreTextPlayer1.setText(scorePlayer1)
     game.sound.play("die");
     player.setCollideWorldBounds(false);
     verify();
@@ -621,4 +621,8 @@ function verify(){
 function configurePlayer(player) {
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
+}
+  
+function endGame() {
+    location.reload();
 }
