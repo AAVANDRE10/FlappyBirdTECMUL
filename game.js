@@ -624,5 +624,6 @@ function configurePlayer(player) {
 }
   
 function endGame() {
+    alert("Game Over!. O jogo vai recomeçar.");
     location.reload();
 }
